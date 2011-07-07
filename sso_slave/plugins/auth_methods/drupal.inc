@@ -39,5 +39,7 @@ function sso_slave_drupal_validate(&$form, &$form_state) {
       'method' => 'POST',
       'data' => $content,
     )
-  );*/
+  );
+  drupal_set_message('<pre>' . var_export($response, TRUE) . '</pre>');*/
+  drupal_set_message('<pre>' . var_export($form_state['input'], TRUE) . '</pre>');
 }

@@ -40,9 +40,32 @@ function sso_slave_permissions() {
 function sso_slave_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_login' || $form_id == 'user_login_block') {
     $form['#validate'][] = 'sso_slave_user_login_validate';
+    ctools_include('export');
+    $methods = ctools_export_crud_load_all('sso_auth_methods');
+    if (count($methods) > 1) {
+      foreach ($methods as $name => $method) {
+        $options[$name] = $method['method'];
+      }
+      $form['servers'] = array(
+        '#type' => 'select',
+        '#title' => t('Authentication Server'),
+        '#options' => $options,
+        '#required' => TRUE,
+      );
+    }
+    elseif (count($methods) == 1) {
+      $keys = array_keys($methods);
+      $form['servers'] = array(
+        '#type' => 'value',
+        '#value' => $keys[0],
+      );
+    }
   }
 }
 
 function sso_slave_user_login_validate(&$form, &$form_state) {
-  
+  ctools_include('plugins');
+  if ($callback = ctools_plugin_load_function('sso_slave', 'auth_methods', $form_state['values']['servers'], 'validate')) {
+    $callback($form, $form_state);
+  }
 }
