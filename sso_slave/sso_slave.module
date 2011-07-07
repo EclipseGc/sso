@@ -65,7 +65,8 @@ function sso_slave_form_alter(&$form, &$form_state, $form_id) {
 
 function sso_slave_user_login_validate(&$form, &$form_state) {
   ctools_include('plugins');
-  if ($callback = ctools_plugin_load_function('sso_slave', 'auth_methods', $form_state['values']['servers'], 'validate')) {
-    $callback($form, $form_state);
+  $method = ctools_export_crud_load('sso_auth_methods', $form_state['values']['servers']);
+  if ($callback = ctools_plugin_load_function('sso_slave', 'auth_methods', $method->auth_type, 'validate')) {
+    $callback($form, $form_state, $method);
   }
 }
