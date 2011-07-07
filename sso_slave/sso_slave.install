@@ -1,0 +1,43 @@
+<?php
+
+function sso_slave_schema() {
+  $schema = array();
+  $schema['sso_auth_methods'] = array(
+    'description' => t('Authentication Options for user login.'),
+    'export' => array(
+      'key' => 'method',
+      'key name' => 'Method',
+      'primary key' => 'method',
+      'identifier' => 'method',
+      'default hook' => 'default_sso_auth_methods',
+      'api' => array(
+        'owner' => 'sso_slave',
+        'api' => 'default_sso_auth_methods',
+        'minimum_version' => 1,
+        'current_version' => 1,
+      ),
+    ),
+    'fields' => array(
+      'method' => array(
+        'type' => 'varchar',
+        'length' => '64',
+        'description' => 'Unique identifier for this authentication method.',
+      ),
+      'auth_type' => array(
+        'type' => 'varchar',
+        'length' => '32',
+        'description' => 'Type of authetication method.',
+      ),
+      'settings' => array(
+        'type' => 'text',
+        'size' => 'big',
+        'description' => 'Serialized authentication settings.',
+        'not null' => TRUE,
+        'serialize' => TRUE,
+        'object default' => array(),
+      ),
+    ),
+    'primary key' => array('method'),
+  );
+  return $schema;
+}

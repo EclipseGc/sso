@@ -1,0 +1,6 @@
+name = SSO Slave
+description = A plugin based solution for defining various SSO authentication methods, and connecting to them.
+core = 7.x
+package = Single Sign On
+dependencies[] = ctools
+files[] = plugins/export_ui/auth_methods.inc

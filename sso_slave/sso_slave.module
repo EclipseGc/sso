@@ -1,0 +1,48 @@
+<?php
+
+/**
+ * Implementation of hook_ctools_plugins_directory().
+ */
+function sso_slave_ctools_plugin_directory($owner, $plugin_type) {
+  if ($owner == 'sso_slave' || $owner == 'ctools') {
+    return "plugins/$plugin_type";
+  }
+}
+
+/**
+ * Implements hook_ctools_plugin_type().
+ */
+function sso_slave_ctools_plugin_type() {
+  return array(
+    'auth_methods' => array(),
+  );
+}
+
+function sso_slave_init() {
+  ctools_include('plugins');
+  ctools_get_plugins('ctools', 'export_ui', 'auth_methods');
+}
+
+/**
+ * Implementation of hook_permissions().
+ */
+function sso_slave_permissions() {
+  return array('administer sso authentication methods' => array(
+    'title' => t('Administer SSO Authentication Methods'),
+    'description' => t('Allows users to create and administer various SSO Methods'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_form_alter().
+ */
+function sso_slave_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'user_login' || $form_id == 'user_login_block') {
+    $form['#validate'][] = 'sso_slave_user_login_validate';
+  }
+}
+
+function sso_slave_user_login_validate(&$form, &$form_state) {
+  
+}

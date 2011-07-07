@@ -1,0 +1,11 @@
+<?php
+
+/**
+ * Implement hook_ctools_plugin_api().
+ */
+function sso_master_ctools_plugin_api($module, $api) {
+  if ($module == 'services' && $api == 'services') {
+    return array('version' => 3);
+  }
+}
+
