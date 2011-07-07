@@ -39,7 +39,12 @@ function sso_slave_permissions() {
  */
 function sso_slave_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'user_login' || $form_id == 'user_login_block') {
+    $finalize = array_search('user_login_final_validate', $form['#validate']);
+    if ($finalize) {
+      unset($form['#validate'][$finalize]);
+    }
     $form['#validate'][] = 'sso_slave_user_login_validate';
+    $form['#validate'][] = 'user_login_final_validate';
     ctools_include('export');
     $methods = ctools_export_crud_load_all('sso_auth_methods');
     if (count($methods) > 1) {
@@ -68,5 +73,9 @@ function sso_slave_user_login_validate(&$form, &$form_state) {
   $method = ctools_export_crud_load('sso_auth_methods', $form_state['values']['servers']);
   if ($callback = ctools_plugin_load_function('sso_slave', 'auth_methods', $method->auth_type, 'validate')) {
     $callback($form, $form_state, $method);
+    global $user;
+    if ($user->uid) {
+      $form_state['uid'] = $user->uid;
+    }
   }
 }

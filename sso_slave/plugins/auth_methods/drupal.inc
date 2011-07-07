@@ -41,6 +41,32 @@ function sso_slave_drupal_validate(&$form, &$form_state, $method) {
     )
   );
   if ($response->code == 200) {
-    user_external_login_register($form_state['input']['name'], 'sso_slave');
+    $query = db_select('users', 'u');
+    $query->join('authmap', 'am', 'u.uid = am.uid');
+    $results = $query
+      ->fields('u', array('uid'))
+      ->condition('u.name', $form_state['values']['name'], '=')
+      ->execute()
+      ->fetchAssoc();
+
+    $query2 = db_select('users', 'u');
+    $results2 = $query2
+      ->fields('u', array('uid'))
+      ->condition('u.name', $form_state['values']['name'], '=')
+      ->execute()
+      ->fetchAssoc();
+    if ($results['uid'] || !$results2['uid']) {
+      user_external_login_register($form_state['values']['name'], 'sso_slave');
+    }
+  }
+  else {
+    $results = $query
+      ->fields('u', array('uid'))
+      ->condition('u.name', $form_state['values']['name'], '=')
+      ->execute()
+      ->fetchAssoc();
+    if (!$results['uid']) {
+      form_set_error('name', t('Unable to validate your username with the @method server', array('@method' => $method->method)));
+    }
   }
 }
