@@ -14,6 +14,7 @@ function sso_slave_drupal_settings_form(&$form, &$form_state) {
     '#title' => t('Server'),
     '#description' => t('The drupal server you wish to contact.'),
     '#default_value' => $form_state['item']->settings['server'],
+    '#required' => TRUE,
   );
   return $form;
 }
@@ -33,13 +34,14 @@ function sso_slave_drupal_validate(&$form, &$form_state, $method) {
   );
 
   $response = drupal_http_request(
-    $method->settings['server'] .'/user/login',
+    $method->settings['server'] .'/sso/user/login',
     array(
       'headers' => array('content-type' => 'application/json'),
       'method' => 'POST',
       'data' => json_encode($content),
     )
   );
+
   if ($response->code == 200) {
     $query = db_select('users', 'u');
     $query->join('authmap', 'am', 'u.uid = am.uid');
@@ -60,6 +62,7 @@ function sso_slave_drupal_validate(&$form, &$form_state, $method) {
     }
   }
   else {
+    $query = db_select('users', 'u');
     $results = $query
       ->fields('u', array('uid'))
       ->condition('u.name', $form_state['values']['name'], '=')

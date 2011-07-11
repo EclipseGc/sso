@@ -30,6 +30,12 @@ function sso_slave_auth_methods_export_ui_form(&$form, &$form_state) {
   foreach ($method_plugins as $plugin_name => $plugin) {
     $options[$plugin_name] = $plugin['title'];
   }
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Method Name'),
+    '#default_value' => $form_state['item']->name,
+    '#required' => TRUE,
+  );
   $form['auth_type'] = array(
     '#type' => 'select',
     '#title' => t('Authentication Method'),

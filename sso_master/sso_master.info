@@ -1,6 +1,7 @@
 name = SSO Master
 description = Default resource setup for login logout with service.s
 dependencies[] = services
+dependencies[] = rest_server
 package = Single Sign On
 core = 7.x
 

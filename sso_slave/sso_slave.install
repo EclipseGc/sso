@@ -23,10 +23,18 @@ function sso_slave_schema() {
         'length' => '64',
         'description' => 'Unique identifier for this authentication method.',
       ),
+      'name' => array(
+        'description' => 'Non-markup name for this method.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
       'auth_type' => array(
         'type' => 'varchar',
         'length' => '32',
         'description' => 'Type of authetication method.',
+        'not null' => TRUE,
       ),
       'settings' => array(
         'type' => 'text',
